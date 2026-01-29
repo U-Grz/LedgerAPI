@@ -13,6 +13,6 @@ jobs:
           username: root
           key: ${{ secrets.SSH_KEY }}
           script: |
-            cd /var/www/ExpenseAPI
+            cd /var/www/LedgerAPI
             git pull origin main
-            sudo systemctl restart ExpenseAPI
+            sudo systemctl restart LedgerAPI
