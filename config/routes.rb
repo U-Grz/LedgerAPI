@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  get "sessions/new"
+  get "sessions/create"
+  get "sessions/destroy"
+  get "pages/home"
 
   # POST /signup - Create new user account
   post '/signup', to: 'authentication#signup'

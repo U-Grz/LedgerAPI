@@ -51,4 +51,8 @@ group :development, :test do
   gem "jwt", "~> 3.1"
 
   gem "kaminari", "~> 1.2"
+  gem "turbo-rails"
+  gem "stimulus-rails"
+  gem "sprockets-rails"
+  gem "rails-controller-testing", group: :test
 end
