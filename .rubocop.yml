@@ -1,4 +1,28 @@
-# Omakase Ruby styling for Rails
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 3.3
+  Exclude:
+    - 'db/**/*'
+    - 'bin/**/*'
+    - 'config/**/*'
+    - 'node_modules/**/*'
+    - 'vendor/**/*'
+
+# Allow longer lines
+Layout/LineLength:
+  Max: 120
+
+# Allow both string styles
+Style/StringLiterals:
+  Enabled: false
+
+# Allow compact array brackets
+Layout/SpaceInsideArrayLiteralBrackets:
+  Enabled: false
+
+# Rails-specific cops
+Rails:
+  Enabled: true# Omakase Ruby styling for Rails
 inherit_gem: { rubocop-rails-omakase: rubocop.yml }
 
 # Overwrite or add rules to create your own house style
