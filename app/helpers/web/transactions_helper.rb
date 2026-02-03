@@ -1,0 +1,2 @@
+module Web::TransactionsHelper
+end

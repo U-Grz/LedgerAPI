@@ -1,5 +1,4 @@
-class TransactionsController < ApplicationController
-  # Include authentication - all actions require valid JWT token
+class Api::TransactionsController < ApplicationController  # Include authentication - all actions require valid JWT token
   include Authenticable
   
   # Run set_transaction before these specific actions
