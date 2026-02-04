@@ -74,11 +74,11 @@
 
       <!-- Action Buttons -->
       <div class="mt-8 flex items-center justify-between">
-        <%= link_to "Cancel", transactions_path, class: "px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50" %>
         <div class="flex items-center space-x-3">
-          <%= button_to "Delete", transaction_path(@transaction), method: :delete, form: { data: { turbo_confirm: "Are you sure you want to delete this transaction?" } }, class: "px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700" %>
-          <%= f.submit "Update Transaction", class: "px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium cursor-pointer" %>
+          <%= link_to "Cancel", transactions_path, class: "px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50" %>
+          <%= link_to "Delete", transaction_path(@transaction), data: { turbo_method: :delete, turbo_confirm: "Are you sure you want to delete this transaction?" }, class: "px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700" %>
         </div>
+        <%= f.submit "Update Transaction", class: "px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium cursor-pointer" %>
       </div>
     <% end %>
   </div>
