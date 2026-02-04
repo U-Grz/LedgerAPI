@@ -1,2 +1,48 @@
-<h1>Pages#home</h1>
-<p>Find me in app/views/pages/home.html.erb</p>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ledger - Personal Finance Tracker</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-blue-500 via-blue-600 to-purple-600 min-h-screen">
+  <div class="container mx-auto px-4 py-16">
+    <!-- Hero Section -->
+    <div class="text-center text-white mb-16">
+      <div class="text-6xl mb-6">💰</div>
+      <h1 class="text-5xl font-bold mb-4">Ledger</h1>
+      <p class="text-xl mb-8 text-blue-100">
+        Take control of your finances with simple, powerful tracking
+      </p>
+      
+      <div class="flex gap-4 justify-center">
+        <%= link_to "Get Started", signup_path, 
+            class: "bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-blue-50 transition transform hover:scale-105" %>
+        <%= link_to "Sign In", login_path, 
+            class: "bg-blue-700 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-blue-800 transition transform hover:scale-105" %>
+      </div>
+    </div>
+
+    <!-- Features -->
+    <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+      <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 text-white">
+        <div class="text-4xl mb-4">📊</div>
+        <h3 class="text-xl font-bold mb-2">Track Everything</h3>
+        <p class="text-blue-100">Monitor your income and expenses in real-time</p>
+      </div>
+      
+      <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 text-white">
+        <div class="text-4xl mb-4">📈</div>
+        <h3 class="text-xl font-bold mb-2">Visualize Growth</h3>
+        <p class="text-blue-100">See your financial progress with beautiful charts</p>
+      </div>
+      
+      <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 text-white">
+        <div class="text-4xl mb-4">🔒</div>
+        <h3 class="text-xl font-bold mb-2">Secure & Private</h3>
+        <p class="text-blue-100">Your data is encrypted and belongs only to you</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
