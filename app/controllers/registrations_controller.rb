@@ -1,4 +1,4 @@
-class RegistrationController < ApplicationController
+class RegistrationsController < ApplicationController
   # Remove this line: skip_before_action :authenticate_user!, only: [:new, :create]
   # No authentication needed for signup
   
