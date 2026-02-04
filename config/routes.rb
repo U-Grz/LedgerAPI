@@ -1,3 +1,4 @@
+# config/routes.rb
 Rails.application.routes.draw do
   root "pages#home"
   
@@ -12,24 +13,14 @@ Rails.application.routes.draw do
   # Dashboard
   get "dashboard", to: "dashboard#index", as: :dashboard
   
-  # Transactions (Web Interface)
-  resources :transactions do
-    collection do
-      get :summary      # GET /transactions/summary
-      get :balance      # GET /transactions/balance
-      get :export       # GET /transactions/export (CSV download)
-    end
-  end
+  # Transactions (Web Interface) - Point to Web namespace
+  resources :transactions, controller: 'web/transactions'
   
-
-  # API ROUTES (JSON - for mobile apps, etc.)
-
+  # API ROUTES
   namespace :api, defaults: { format: :json } do
-    # Authentication
     post '/signup', to: 'authentication#signup'
     post '/login',  to: 'authentication#login'
     
-    # Transactions
     resources :transactions, only: [:index, :show, :create, :update, :destroy] do
       collection do
         get :summary

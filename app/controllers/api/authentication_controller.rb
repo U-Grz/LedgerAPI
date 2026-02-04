@@ -1,5 +1,4 @@
-class AuthenticationController < ApplicationController
-  
+class Api::AuthenticationController < ApplicationController  
   def signup
     # Create new user with provided parameters
     user = User.new(user_params)
