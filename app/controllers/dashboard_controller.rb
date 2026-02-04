@@ -6,8 +6,8 @@ class DashboardController < ApplicationController
     
     # Calculate stats
     @total_income = current_user.transactions.income.sum(:amount)
-    @total_expenses = current_user.transactions.expense.sum(:amount)
-    @balance = @total_income - @total_expenses
+    @total_expense = current_user.transactions.expense.sum(:amount)  # Changed from @total_expenses
+    @current_balance = @total_income - @total_expense  # Changed from @balance
     
     # This month stats
     @this_month_income = current_user.transactions
