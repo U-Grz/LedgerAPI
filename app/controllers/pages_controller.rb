@@ -1,8 +1,10 @@
 class PagesController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:home]
+  
   def home
-    if current_user
+    # If user is already logged in, send them to dashboard
+    if session[:user_id] && User.find_by(id: session[:user_id])
       redirect_to dashboard_path
     end
+    # Otherwise, show home page
   end
 end
