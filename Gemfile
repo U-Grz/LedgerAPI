@@ -56,3 +56,5 @@ group :development, :test do
   gem "sprockets-rails"
   gem "rails-controller-testing", group: :test
 end
+
+gem "stripe", "~> 18.3"

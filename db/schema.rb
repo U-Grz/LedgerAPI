@@ -10,12 +10,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_28_142628) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_05_110645) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
+  create_table "subscriptions", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "current_period_end"
+    t.string "plan"
+    t.string "status"
+    t.string "stripe_customer_id"
+    t.string "stripe_subscription_id"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_subscriptions_on_user_id"
+  end
+
   create_table "transactions", force: :cascade do |t|
     t.decimal "amount", precision: 10, scale: 2, null: false
+    t.string "category"
     t.datetime "created_at", null: false
     t.date "date", null: false
     t.text "description"
@@ -36,5 +49,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_28_142628) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "subscriptions", "users"
   add_foreign_key "transactions", "users"
 end
