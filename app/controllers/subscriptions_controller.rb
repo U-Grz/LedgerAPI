@@ -1,5 +1,5 @@
 class SubscriptionsController < ApplicationController
-	before_action :autheticate_web_user!
+	before_action :authenticate_web_user!
 
 	def new
 		if current_user.subscribed?
