@@ -40,8 +40,8 @@ class WebhooksController < ApplicationController
 		when "customer.subscription.deleted"
 			Rails.logger.info "🗑️ Processing customer.subscription.deleted"
 			handle_subscription_deleted(event.data.object)
-		when "invoice.payment_succeeded"
-			Rails.logger.info "💰 Processing invoice.payment_succeeded"
+		when "invoice.payment_succeeded", "invoice.paid"
+			Rails.logger.info "💰 Processing invoice payment success"
 			handle_payment_succeeded(event.data.object)
 		when "invoice.payment_failed"
 			Rails.logger.info "⚠️ Processing invoice.payment_failed"
