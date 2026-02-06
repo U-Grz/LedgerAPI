@@ -129,15 +129,23 @@ class WebhooksController < ApplicationController
 		
 		begin
 			stripe_subscription = Stripe::Subscription.retrieve(subscription_id)
-			Rails.logger.info "   Stripe subscription status: #{stripe_subscription.status}"
+			Rails.logger.info "   Stripe subscription status: #{stripe_subscription['status']}"
 			
-			# FIX: Access Stripe object properties using bracket notation
+			# FIX: Access Stripe object properties using bracket notation and handle nil values
+			current_period_end = stripe_subscription['current_period_end']
+			
+			unless current_period_end
+				Rails.logger.error "❌ No current_period_end in subscription"
+				Rails.logger.error "   Subscription data: #{stripe_subscription.to_hash.inspect}"
+				return
+			end
+			
 			db_subscription = user.create_subscription!(
 				stripe_customer_id: customer_id,
 				stripe_subscription_id: subscription_id,
 				status: stripe_subscription['status'],
 				plan: plan || "pro",
-				current_period_end: Time.at(stripe_subscription['current_period_end'])
+				current_period_end: Time.at(current_period_end)
 			)
 			
 			Rails.logger.info "✅ ✅ ✅ SUBSCRIPTION CREATED! ID: #{db_subscription.id}"
