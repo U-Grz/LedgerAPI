@@ -131,12 +131,13 @@ class WebhooksController < ApplicationController
 			stripe_subscription = Stripe::Subscription.retrieve(subscription_id)
 			Rails.logger.info "   Stripe subscription status: #{stripe_subscription.status}"
 			
+			# FIX: Access Stripe object properties using bracket notation
 			db_subscription = user.create_subscription!(
 				stripe_customer_id: customer_id,
 				stripe_subscription_id: subscription_id,
-				status: stripe_subscription.status,
+				status: stripe_subscription['status'],
 				plan: plan || "pro",
-				current_period_end: Time.at(stripe_subscription.current_period_end)
+				current_period_end: Time.at(stripe_subscription['current_period_end'])
 			)
 			
 			Rails.logger.info "✅ ✅ ✅ SUBSCRIPTION CREATED! ID: #{db_subscription.id}"
@@ -155,9 +156,10 @@ class WebhooksController < ApplicationController
 			return
 		end
 		
+		# FIX: Use bracket notation for Stripe objects
 		user_subscription.update(
-			status: subscription.status,
-			current_period_end: Time.at(subscription.current_period_end)
+			status: subscription['status'],
+			current_period_end: Time.at(subscription['current_period_end'])
 		)
 		Rails.logger.info "✅ Subscription updated"
 	end
