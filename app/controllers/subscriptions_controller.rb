@@ -1,12 +1,11 @@
 class SubscriptionsController < ApplicationController
 	before_action :authenticate_web_user!
-
+	
 	def new
 		if current_user.subscribed?
 			redirect_to subscription_path, notice: "You already have an active subscription"
 			return
 		end
-
 		@plans = {
 			pro:{
 				name: "Pro",
@@ -15,7 +14,7 @@ class SubscriptionsController < ApplicationController
 				features: [
 					"Unlimited transactions",
 					"Advanced analytics & charts",
-					"CSV/Excel eport",
+					"CSV/Excel export",
 					"Email support",
 					"Custom categories"
 				]
@@ -26,16 +25,16 @@ class SubscriptionsController < ApplicationController
 				price_id: "price_1SxQtZ1ZlBmkpq2TQFHCfx2G",
 				features: [
 					"Everything in Pro",
-          			"Multi-user access (up to 5)",
-          			"Team collaboration",
-          			"Priority support",
-          			"API access",
-          			"Custom branding"
-          		]
+					"Multi-user access (up to 5)",
+					"Team collaboration",
+					"Priority support",
+					"API access",
+					"Custom branding"
+				]
 			}
 		}
 	end
-
+	
 	def create
 		begin
 			if current_user.subscription&.stripe_customer_id
@@ -48,7 +47,7 @@ class SubscriptionsController < ApplicationController
 				)
 				customer_id = customer.id
 			end
-
+			
 			session = Stripe::Checkout::Session.create(
 				customer: customer_id,
 				mode: "subscription",
@@ -63,55 +62,71 @@ class SubscriptionsController < ApplicationController
 						user_id: current_user.id,
 						plan: params[:plan]
 					}
+				},
+				metadata: {
+					user_id: current_user.id,
+					plan: params[:plan]
 				}
 			)
-
 			redirect_to session.url, allow_other_host: true	
 		rescue Stripe::StripeError => e
 			redirect_to new_subscription_path, alert: "Payment error: #{e.message}"
 		end
 	end
-
+	
 	def show
 		@subscription = current_user.subscription
-
 		unless @subscription
 			redirect_to new_subscription_path, alert: "You don't have an active subscription"
 		end
 	end
-
+	
 	def success
-
 	end
-
+	
 	def cancel
 		subscription = current_user.subscription
-
-		if subscription&.stripe_subscription_id
-			begin
-				Stripe::Subscription.delete(subscription.stripe_subscription_id)
-				redirect_to dashboard_path, notice: "Subscription cancelled successfully"
-			rescue
-				redirect_to subscription_path, alert: "No active subscription found"
-			end
-		else
+		
+		unless subscription&.stripe_subscription_id
 			redirect_to dashboard_path, alert: "No active subscription found"
+			return
+		end
+		
+		begin
+			# Cancel the subscription at the end of the billing period
+			stripe_subscription = Stripe::Subscription.update(
+				subscription.stripe_subscription_id,
+				cancel_at_period_end: true
+			)
+			
+			# Update local database
+			subscription.update(
+				status: 'canceling',
+				cancel_at_period_end: true
+			)
+			
+			redirect_to subscription_path, notice: "Subscription will be cancelled at the end of your billing period (#{subscription.current_period_end.strftime('%B %d, %Y')})"
+		rescue Stripe::InvalidRequestError => e
+			Rails.logger.error "Stripe error: #{e.message}"
+			redirect_to subscription_path, alert: "Could not cancel subscription: #{e.message}"
+		rescue Stripe::StripeError => e
+			Rails.logger.error "Stripe error: #{e.message}"
+			redirect_to subscription_path, alert: "An error occurred while cancelling your subscription"
 		end
 	end
-
+	
 	private
-
+	
 	def authenticate_web_user!
 		@current_user = User.find_by(id: session[:user_id])
-
 		unless @current_user
 			redirect_to login_path, alert: "Please log in to continue"
 		end
 	end
-
+	
 	def current_user
 		@current_user
 	end
-
+	
 	helper_method :current_user
-end 
+end
