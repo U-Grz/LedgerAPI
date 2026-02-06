@@ -131,14 +131,20 @@ class WebhooksController < ApplicationController
 			stripe_subscription = Stripe::Subscription.retrieve(subscription_id)
 			Rails.logger.info "   Stripe subscription status: #{stripe_subscription['status']}"
 			
-			# FIX: Access Stripe object properties using bracket notation and handle nil values
-			current_period_end = stripe_subscription['current_period_end']
+			# FIX: Get current_period_end from the subscription items (not top level)
+			# The current_period_end is in items.data[0].current_period_end
+			current_period_end = nil
+			
+			if stripe_subscription['items'] && stripe_subscription['items']['data']&.any?
+				current_period_end = stripe_subscription['items']['data'][0]['current_period_end']
+			end
 			
 			unless current_period_end
-				Rails.logger.error "❌ No current_period_end in subscription"
-				Rails.logger.error "   Subscription data: #{stripe_subscription.to_hash.inspect}"
+				Rails.logger.error "❌ No current_period_end in subscription items"
 				return
 			end
+			
+			Rails.logger.info "   Current period end: #{Time.at(current_period_end)}"
 			
 			db_subscription = user.create_subscription!(
 				stripe_customer_id: customer_id,
@@ -164,10 +170,15 @@ class WebhooksController < ApplicationController
 			return
 		end
 		
-		# FIX: Use bracket notation for Stripe objects
+		# FIX: Get current_period_end from subscription items
+		current_period_end = nil
+		if subscription['items'] && subscription['items']['data']&.any?
+			current_period_end = subscription['items']['data'][0]['current_period_end']
+		end
+		
 		user_subscription.update(
 			status: subscription['status'],
-			current_period_end: Time.at(subscription['current_period_end'])
+			current_period_end: current_period_end ? Time.at(current_period_end) : user_subscription.current_period_end
 		)
 		Rails.logger.info "✅ Subscription updated"
 	end
