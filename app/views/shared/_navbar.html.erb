@@ -17,7 +17,12 @@
         
         <%= link_to "Transactions", transactions_path, 
             class: "text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition" %>
-        
+        <!-- Debug info - remove after testing -->
+		<div class="text-xs bg-yellow-100 p-2">
+		  User: <%= current_user.name %><br>
+		  Has subscription: <%= current_user.subscription.present? %><br>
+		  Subscribed?: <%= current_user.subscribed? %>
+		</div>
         <% if current_user.subscribed? %>
           <%= link_to subscription_path, class: "flex items-center space-x-1 text-indigo-600 px-3 py-2 rounded-md text-sm font-medium" do %>
             <span>⭐</span>
