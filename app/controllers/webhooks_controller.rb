@@ -98,16 +98,25 @@ class WebhooksController < ApplicationController
 			return
 		end
 		
-		# FIX: Access subscription ID from the correct location in the webhook payload
-		# The subscription ID is in the line item's parent structure
-		subscription_id = line_item.dig('parent', 'subscription_item_details', 'subscription')
+		# FIX: Access subscription ID from the Stripe object properties
+		# Try to get it from the line item's parent structure
+		subscription_id = nil
 		
-		# Fallback: Also check the invoice's subscription field (for older API versions)
-		subscription_id ||= invoice['subscription']
+		begin
+			# Access the parent structure
+			if line_item.parent && line_item.parent['subscription_item_details']
+				subscription_id = line_item.parent['subscription_item_details']['subscription']
+			end
+			
+			# Fallback: check invoice subscription field
+			subscription_id ||= invoice['subscription']
+		rescue => e
+			Rails.logger.error "❌ Error accessing subscription data: #{e.message}"
+		end
 		
 		unless subscription_id
 			Rails.logger.error "❌ No subscription ID in invoice"
-			Rails.logger.error "   Invoice data: #{invoice.to_h.slice('id', 'subscription', 'parent')}"
+			Rails.logger.error "   Line item parent: #{line_item.parent.inspect}"
 			return
 		end
 		
