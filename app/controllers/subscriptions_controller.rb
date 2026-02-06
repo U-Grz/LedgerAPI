@@ -23,7 +23,7 @@ class SubscriptionsController < ApplicationController
 			business:{
 				name: "Business",
 				price: 15.00,
-				price_id: "price_1SxQtZ1ZlBmkpq2TQFHCfx2G"
+				price_id: "price_1SxQtZ1ZlBmkpq2TQFHCfx2G",
 				features: [
 					"Everything in Pro",
           			"Multi-user access (up to 5)",
