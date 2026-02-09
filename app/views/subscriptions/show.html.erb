@@ -1,6 +1,5 @@
 <main class="max-w-3xl mx-auto px-4 py-16">
   <h1 class="text-3xl font-bold text-gray-900 mb-8">My Subscription</h1>
-
   <div class="bg-white rounded-2xl shadow-lg p-8">
     <!-- Current Plan -->
     <div class="mb-8">
@@ -17,12 +16,11 @@
         <div class="text-right">
           <div class="text-sm text-gray-600">Renews on</div>
           <div class="font-bold text-gray-900">
-            <%= @subscription.current_period_end.strftime("%B %d, %Y") %>
+            <%= @subscription.current_period_end ? @subscription.current_period_end.strftime("%B %d, %Y") : "N/A" %>
           </div>
         </div>
       </div>
     </div>
-
     <!-- Actions -->
     <div class="border-t pt-8">
       <h2 class="text-xl font-bold text-gray-900 mb-4">Manage Subscription</h2>
@@ -34,7 +32,10 @@
           class: "bg-red-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-700 transition" %>
       
       <p class="text-sm text-gray-600 mt-4">
-        You can cancel anytime. Your access will continue until <%= @subscription.current_period_end.strftime("%B %d, %Y") %>.
+        You can cancel anytime. 
+        <% if @subscription.current_period_end %>
+          Your access will continue until <%= @subscription.current_period_end.strftime("%B %d, %Y") %>.
+        <% end %>
       </p>
     </div>
   </div>
